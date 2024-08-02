@@ -18,7 +18,9 @@ const saveForgotPassword = async (req = {}) => {
       countryRequest: utils.getCountry(req)
     })
     const item = await forgot.save()
-    return item
+
+    // de-identification - Return decrypted user object
+    return item.toJSON()
   } catch (err) {
     throw utils.buildErrObject(422, err.message)
   }

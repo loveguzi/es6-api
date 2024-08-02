@@ -18,7 +18,7 @@ const registerUser = async (req = {}) => {
     })
     const savedUser = await user.save()
 
-    // Return decrypted user object
+    // de-identification - Return decrypted user object
     return savedUser.toJSON()
   } catch (err) {
     throw utils.buildErrObject(422, err.message)

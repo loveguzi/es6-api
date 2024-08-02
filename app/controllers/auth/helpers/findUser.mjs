@@ -1,5 +1,6 @@
 import User from '../../../models/user.mjs'
 import * as utils from '../../../middleware/utils/index.mjs'
+import * as auth from '../../../middleware/auth/index.mjs'
 
 /**
  * Finds user by email
@@ -9,9 +10,14 @@ import * as utils from '../../../middleware/utils/index.mjs'
  */
 const findUser = async (email = '') => {
   try {
+    // de-identification
+    const searchEmail = process.env.DATA_ANONYMIZATION
+      ? auth.encrypt(email)
+      : email
+
     const item = await User.findOne(
       {
-        email
+        email: searchEmail
       },
       'password loginAttempts blockExpires name email role verified verification'
     )

@@ -9,6 +9,7 @@ import * as auth from '../auth/index.mjs'
  */
 export const emailExists = async (email = '') => {
   try {
+    // de-identification
     const searchEmail = process.env.DATA_ANONYMIZATION
       ? auth.encrypt(email)
       : email

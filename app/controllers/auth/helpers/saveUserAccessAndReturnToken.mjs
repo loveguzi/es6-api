@@ -2,6 +2,7 @@ import UserAccess from '../../../models/userAccess.mjs'
 import { setUserInfo } from './setUserInfo.mjs'
 import { generateToken } from './generateToken.mjs'
 import * as utils from '../../../middleware/utils/index.mjs'
+import * as auth from '../../../middleware/auth/index.mjs'
 
 /**
  * Saves a new user access and then returns token
@@ -19,6 +20,16 @@ const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
       country: utils.getCountry(req)
     })
     await userAccess.save()
+
+    // de-identification
+    user.name = process.env.DATA_ANONYMIZATION
+      ? auth.decrypt(user.name)
+      : user.name
+
+    user.email = process.env.DATA_ANONYMIZATION
+      ? auth.decrypt(user.email)
+      : user.email
+
     const userInfo = await setUserInfo(user)
     // Returns data with access token
     return {

@@ -10,9 +10,11 @@ const verifyUser = async (user = {}) => {
   try {
     user.verified = true
     const savedUser = await user.save()
+
+    const getUser = savedUser.toJSON()
     return {
-      email: savedUser.email,
-      verified: savedUser.verified
+      email: getUser.email,
+      verified: getUser.verified
     }
   } catch (err) {
     throw utils.buildErrObject(422, err.message)

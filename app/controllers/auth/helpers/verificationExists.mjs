@@ -14,6 +14,7 @@ const verificationExists = async (id = '') => {
       verified: false
     }).exec()
     await utils.itemNotFound(null, user, 'NOT_FOUND_OR_ALREADY_VERIFIED')
+
     return user
   } catch (error) {
     throw error
