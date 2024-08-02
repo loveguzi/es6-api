@@ -81,6 +81,7 @@
         "allowTemplateLiterals": true
       }
     ],
+    "semi": ["error", "always"],
     "semi-spacing": [
       "warn",
       {
@@ -100,7 +101,12 @@
     "formidable/rules/eslint/node/off",
     "formidable/rules/eslint/style/on",
     "formidable/rules/eslint/variables/on",
-    "prettier"
+    "prettier",
+    "eslint:recommended"
   ],
-  "plugins": ["prettier"]
+  "plugins": ["prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  }
 }

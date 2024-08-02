@@ -6,20 +6,21 @@
   "engines": {
     "node": "20.x"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/loveguzi/wevis-api-mongo-jwt.git"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production pm2 start server.js",
+    "start": "cross-env NODE_ENV=production pm2 start server.mjs",
     "mocha": "nyc mocha --timeout=5000 --exit",
     "test": "npm run coverage:clean && npm run test:unit && npm run test:e2e && npm run coverage",
     "test:unit": "cross-env NODE_ENV=test jest --coverage",
     "test:e2e": "cross-env NODE_ENV=test npm run fresh && npm run mocha",
-    "dev": "cross-env NODE_ENV=development nodemon --inspect=9230 server.js",
+    "dev": "cross-env NODE_ENV=development nodemon --inspect=9230 server.mjs",
     "fresh": "npm run clean && npm run seed",
-    "clean": "node clean.js",
-    "seed": "node seed.js",
+    "clean": "node clean.mjs",
+    "seed": "node seed.mjs",
     "prettier": "prettier --write --config .prettierrc.json \"**/*.js\"",
     "lint": "eslint --fix --config .eslintrc.json \"**/*.js\"",
     "remark": "remark . -o",
@@ -57,7 +58,7 @@
     }
   },
   "lint-staged": {
-    "*.js": [
+    "*.mjs": [
       "prettier --write",
       "eslint --fix"
     ]
@@ -94,6 +95,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@types/dotenv-safe": "^8.1.6",
     "chai": "^5.1.1",
     "chai-http": "^5.0.0",
     "cross-env": "^7.0.3",
@@ -143,7 +145,7 @@
     "redis",
     "JSDoc"
   ],
-  "main": "clean.js",
+  "main": "clean.mjs",
   "directories": {
     "test": "test"
   },
