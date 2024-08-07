@@ -1,6 +1,7 @@
 import User from '../../models/user.mjs'
 import * as utils from '../utils/index.mjs'
 import * as auth from '../auth/index.mjs'
+import { DATA_ANONYMIZATION } from '../../../config/constants.mjs'
 
 /**
  * Checks User model if user with a specific email exists
@@ -10,9 +11,7 @@ import * as auth from '../auth/index.mjs'
 export const emailExists = async (email = '') => {
   try {
     // de-identification
-    const searchEmail = process.env.DATA_ANONYMIZATION
-      ? auth.encrypt(email)
-      : email
+    const searchEmail = DATA_ANONYMIZATION ? auth.encrypt(email) : email
 
     const user = await User.findOne({ email: searchEmail }).exec()
     if (user) {

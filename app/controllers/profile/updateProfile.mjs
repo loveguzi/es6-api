@@ -12,6 +12,10 @@ const updateProfile = async (req, res) => {
     const id = await utils.isIDGood(req.user._id)
     const data = matchedData(req)
     const updatedProfile = await helpers.updateProfileInDB(data, id)
+
+    // Manually call toJSON
+    // console.log('updatedProfile', updatedProfile.toJSON())
+
     res.status(200).json(updatedProfile)
   } catch (error) {
     utils.handleError(res, error)

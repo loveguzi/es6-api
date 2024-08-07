@@ -26,12 +26,17 @@ const createItemInDb = async ({
       country,
       verification: uuidv4()
     })
-    const item = await user.save()
 
-    const sanitizedItem = item.toObject()
+    const savedUser = await user.save()
+
+    // de-identification - Return decrypted user object
+    const sanitizedItem = savedUser.toJSON()
+
+    // Sensitive information deletion
     delete sanitizedItem.password
     delete sanitizedItem.blockExpires
     delete sanitizedItem.loginAttempts
+
     return sanitizedItem
   } catch (err) {
     throw utils.buildErrObject(422, err.message)

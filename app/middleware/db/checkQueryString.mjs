@@ -1,3 +1,4 @@
+import * as auth from '../auth/index.mjs'
 import * as utils from '../../middleware/utils/index.mjs'
 
 /**
@@ -24,15 +25,46 @@ export const checkQueryString = async (query = {}) => {
       // Takes fields param and builds an array by splitting with ','
       const arrayFields = query.fields.split(',')
 
+      // Takes encrypt param and builds an array by splitting with ','
+      const arrayEncrypt = query.encrypt ? query.encrypt.split(',') : []
+
       // Adds SQL Like %word% with regex for each filter and each field
-      arrayFilters.forEach((filter) => {
-        arrayFields.forEach((field) => {
+      // 2024.07.15 Deprecated.
+      // filter:username,useremail
+      // fields:name,email
+      // query {
+      //   '$or': [
+      //     { name: 'username' },
+      //     { email: 'username' },
+      //     { name: 'useremail' },
+      //     { email: 'emuseremailail' }
+      //   ]
+      // }
+      // arrayFilters.forEach((filter) => {
+      //   console.log('filter', filter)
+      //   arrayFields.forEach((field) => {
+      //     array.push({
+      //       [field]: {
+      //         $regex: new RegExp(filter.trim(), 'i')
+      //       }
+      //     })
+      //   })
+      // })
+
+      // Adds exact match filter for each filter and each field
+      arrayFilters.forEach((filter, index) => {
+        if (arrayFields[index]) {
+          let value = filter.trim()
+
+          // Encrypt value if the field is in the encrypt list
+          if (arrayEncrypt.includes(arrayFields[index])) {
+            value = auth.encrypt(value)
+          }
+
           array.push({
-            [field]: {
-              $regex: new RegExp(filter.trim(), 'i')
-            }
+            [arrayFields[index]]: value
           })
-        })
+        }
       })
 
       // Puts array result in data

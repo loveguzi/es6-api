@@ -31,6 +31,7 @@ const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
       : user.email
 
     const userInfo = await setUserInfo(user)
+
     // Returns data with access token
     return {
       token: generateToken(user._id),

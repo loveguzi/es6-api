@@ -12,11 +12,9 @@ const login = async (req, res) => {
   try {
     const data = matchedData(req)
     const user = await helpers.findUser(data.email)
-    console.log('user', user)
     await helpers.userIsBlocked(user)
     await helpers.checkLoginAttemptsAndBlockExpires(user)
     const isPasswordMatch = await auth.checkPassword(data.password, user)
-    console.log('isPasswordMatch', isPasswordMatch)
     if (!isPasswordMatch) {
       utils.handleError(res, await helpers.passwordsDoNotMatch(user))
     } else {

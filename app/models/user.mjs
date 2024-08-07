@@ -3,8 +3,10 @@ import bcrypt from 'bcrypt'
 import validator from 'validator'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import * as auth from '../middleware/auth/index.mjs'
-
-const ENCRYPT_COLUMNS = ['name', 'email', 'phone'] // Columns to be encrypted
+import {
+  USERS_ENCRYPT_COLUMNS,
+  DATA_ANONYMIZATION
+} from '../../config/constants.mjs'
 
 const UserSchema = new mongoose.Schema(
   {
@@ -90,8 +92,8 @@ const hash = (user, salt, next) => {
     user.password = newHash
 
     // Encrypt specified fields before saving if DATA_ANONYMIZATION is true
-    if (process.env.DATA_ANONYMIZATION === 'true') {
-      ENCRYPT_COLUMNS.forEach((field) => {
+    if (DATA_ANONYMIZATION === 'true') {
+      USERS_ENCRYPT_COLUMNS.forEach((field) => {
         if (user.isModified(field)) {
           user[field] = auth.encrypt(user[field])
         }
@@ -118,8 +120,8 @@ UserSchema.pre('save', function (next) {
   const SALT_FACTOR = 5
   if (!that.isModified('password')) {
     // Encrypt specified fields before saving if DATA_ANONYMIZATION is true
-    if (process.env.DATA_ANONYMIZATION === 'true') {
-      ENCRYPT_COLUMNS.forEach((field) => {
+    if (DATA_ANONYMIZATION === 'true') {
+      USERS_ENCRYPT_COLUMNS.forEach((field) => {
         if (that.isModified(field)) {
           that[field] = auth.encrypt(that[field])
         }
@@ -134,8 +136,8 @@ UserSchema.pre('save', function (next) {
 // Method to decrypt fields when returning the user document
 UserSchema.methods.toJSON = function () {
   const userObject = this.toObject()
-  if (process.env.DATA_ANONYMIZATION === 'true') {
-    ENCRYPT_COLUMNS.forEach((field) => {
+  if (DATA_ANONYMIZATION === 'true') {
+    USERS_ENCRYPT_COLUMNS.forEach((field) => {
       if (userObject[field]) {
         userObject[field] = auth.decrypt(userObject[field])
       }

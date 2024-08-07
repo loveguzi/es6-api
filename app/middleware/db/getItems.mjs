@@ -13,6 +13,7 @@ export const getItems = async (req = {}, model = {}, query = {}) => {
   try {
     const options = await listInitOptions(req)
     const items = await model.paginate(query, options)
+
     return cleanPaginationID(items)
   } catch (err) {
     throw utils.buildErrObject(422, err.message)

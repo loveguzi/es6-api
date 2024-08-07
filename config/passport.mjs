@@ -38,10 +38,15 @@ const jwtOptions = {
 const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
   try {
     const user = await User.findById(payload.data._id)
+
     if (!user) {
       return done(null, false)
     }
-    return done(null, user)
+
+    // Call the user's toJSON method to get the decrypted user object
+    const userObj = user.toJSON()
+
+    return done(null, userObj)
   } catch (err) {
     return done(err, false)
   }

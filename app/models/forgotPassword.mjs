@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
 import validator from 'validator'
 import * as auth from '../middleware/auth/index.mjs'
-
-// Columns to be encrypted
-const ENCRYPT_COLUMNS = ['email']
+import {
+  USERS_ENCRYPT_COLUMNS,
+  DATA_ANONYMIZATION
+} from '../../config/constants.mjs'
 
 const ForgotPasswordSchema = new mongoose.Schema(
   {
@@ -51,8 +52,8 @@ const ForgotPasswordSchema = new mongoose.Schema(
 // Pre-save middleware for encrypting fields
 ForgotPasswordSchema.pre('save', function (next) {
   const that = this
-  if (process.env.DATA_ANONYMIZATION === 'true') {
-    ENCRYPT_COLUMNS.forEach((field) => {
+  if (DATA_ANONYMIZATION === 'true') {
+    USERS_ENCRYPT_COLUMNS.forEach((field) => {
       if (that.isModified(field)) {
         that[field] = auth.encrypt(that[field])
       }
@@ -64,8 +65,8 @@ ForgotPasswordSchema.pre('save', function (next) {
 // Method to decrypt fields when returning the document
 ForgotPasswordSchema.methods.toJSON = function () {
   const forgotPasswordObject = this.toObject()
-  if (process.env.DATA_ANONYMIZATION === 'true') {
-    ENCRYPT_COLUMNS.forEach((field) => {
+  if (DATA_ANONYMIZATION === 'true') {
+    USERS_ENCRYPT_COLUMNS.forEach((field) => {
       if (forgotPasswordObject[field]) {
         forgotPasswordObject[field] = auth.decrypt(forgotPasswordObject[field])
       }

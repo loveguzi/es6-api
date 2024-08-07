@@ -10,6 +10,10 @@ const getProfile = async (req, res) => {
   try {
     const id = await utils.isIDGood(req.user._id)
     const profile = await helpers.getProfileFromDB(id)
+
+    // Manually call toJSON
+    // console.log('profile', profile.toJSON())
+
     res.status(200).json(profile)
   } catch (error) {
     utils.handleError(res, error)
